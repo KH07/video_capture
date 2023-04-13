@@ -1,3 +1,4 @@
+import time
 import cv2
 
 def main():
@@ -7,7 +8,8 @@ def main():
 
     # Create a VideoWriter object
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('output.avi', fourcc, 24.0, (640, 480))
+    timestr = time.strftime("%Y%m%d-%H%M%S")
+    out = cv2.VideoWriter(timestr+'.avi', fourcc, 24.0, (640, 480))
 
     while(cap.isOpened()):
         ret, frame = cap.read()

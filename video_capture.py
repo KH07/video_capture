@@ -6,25 +6,40 @@ def main():
     # Create a VideoCapture object
     cap = cv2.VideoCapture(0)
 
-    # Create a VideoWriter object
+    width = int(cap.get(3))
+    height = int(cap.get(4))
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    timestr = time.strftime("%Y%m%d-%H%M%S")
-    out = cv2.VideoWriter(timestr+'.avi', fourcc, 24.0, (640, 480))
+
+    recording = False
 
     while(cap.isOpened()):
         ret, frame = cap.read()
-        if not ret:
-            break
+        if ret:
+            cv2.imshow('frame', frame)
 
-        vidout = cv2.resize(frame, (640, 480))
-        out.write(vidout)
-        cv2.imshow('frame', frame)
+        key = cv2.waitKey(1) & 0xFF
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        # Press 'R' to start recording
+        if key == ord('r') and recording is False:
+            # Create a VideoWriter object
+            filename = time.strftime("%Y%m%d-%H%M%S") + '.avi'
+            out = cv2.VideoWriter(filename, fourcc, 24.0, (width, height))
+            recording = True
+
+        if recording:
+            out.write(frame)
+
+        # Press 'S' to stop recording
+        if key == ord('s'):
+            recording = False
+            out.release()
+            continue
+
+        # Press 'Q' to quit the program
+        if key == ord('q'):
             break
 
     cap.release()
-    out.release()
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
